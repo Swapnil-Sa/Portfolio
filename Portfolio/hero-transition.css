@@ -1,0 +1,95 @@
+/* V14 portrait milestone: image assets and original site content are unchanged.
+   All movement is event-driven; the portrait has no idle animation. */
+@media (prefers-reduced-motion: no-preference) {
+  /* During first-visit introduction, stage the portrait before the copy. */
+  html.v14-intro-pending .hero-media-stack {
+    perspective: 1200px;
+    overflow: visible;
+  }
+  html.v14-intro-pending:not(.v14-portrait-visible) .hero-photo {
+    opacity: 0 !important;
+    transform: translate3d(0,62px,0) rotateX(7deg) rotateY(-12deg) scale(.87) !important;
+    filter: blur(7px);
+    pointer-events: none;
+  }
+  html.v14-intro-pending:not(.v14-details-visible) .hero-copy,
+  html.v14-intro-pending:not(.v14-details-visible) .hero-visual {
+    opacity: 0 !important;
+    transform: translate3d(0,48px,0) !important;
+    pointer-events: none;
+  }
+  html.v14-intro-pending:not(.v14-details-visible) .site-header {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  html.v14-intro-pending .hero-copy,
+  html.v14-intro-pending .hero-visual {
+    transition: opacity 900ms cubic-bezier(.17,.74,.18,1), transform 1000ms cubic-bezier(.17,.74,.18,1) !important;
+  }
+  html.v14-intro-pending .site-header {
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  html.v14-intro-pending .hero-photo {
+    transition: transform 900ms cubic-bezier(.18,.8,.16,1), opacity 760ms ease, filter 900ms ease !important;
+  }
+  html.v14-intro-pending.v14-portrait-visible .hero-photo {
+    opacity: 1 !important;
+    filter: blur(0);
+    transform: perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0) !important;
+  }
+  html.v14-intro-pending.v14-details-visible .hero-copy,
+  html.v14-intro-pending.v14-details-visible .hero-visual {
+    opacity: 1 !important;
+    transform: translate3d(0,0,0) !important;
+    pointer-events: auto;
+  }
+  html.v14-intro-pending.v14-details-visible .hero-visual { transition-delay: 240ms !important; }
+  html.v14-intro-pending.v14-details-visible .site-header {
+    opacity: 1;
+    transform: none;
+  }
+  /* Original image is a single unchanged file; depth is applied to the frame. */
+  .v14-interactive-portrait {
+    --portrait-x:0deg; --portrait-y:0deg; --portrait-lift:0px;
+    --portrait-shift-x:0px; --portrait-shift-y:0px;
+    transform: perspective(1100px) rotateX(var(--portrait-x)) rotateY(var(--portrait-y)) translateZ(var(--portrait-lift));
+    transform-style: preserve-3d;
+    transition:transform 460ms cubic-bezier(.18,.8,.2,1),box-shadow 420ms ease;
+    will-change:auto;
+  }
+  .v14-interactive-portrait.is-interacting {
+    will-change:transform;
+    box-shadow: 0 35px 68px color-mix(in srgb, var(--ink) 23%, transparent), 0 4px 14px color-mix(in srgb, var(--teal) 12%, transparent);
+    transition:transform 155ms ease-out,box-shadow 300ms ease;
+  }
+  .v14-interactive-portrait::after {
+    content:"";pointer-events:none;position:absolute;inset:0;z-index:3;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.14);
+    border-radius:inherit;
+  }
+  .v14-interactive-portrait img { transition:transform 380ms cubic-bezier(.18,.8,.2,1); transform:translate3d(0,0,0) scale(1); }
+  .v14-interactive-portrait.is-interacting img { transform:translate3d(var(--portrait-shift-x),var(--portrait-shift-y),18px) scale(1.065); }
+}
+/* Ghost tiles contain actual pixels from the original illustrative intro dashboard. */
+.v14-handoff-overlay {
+  position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden;perspective:1000px;
+  contain:layout style;
+}
+.v14-shard {
+  position:absolute;display:block;box-sizing:border-box;will-change:transform,opacity;
+  transform-style:preserve-3d;backface-visibility:hidden;
+  background-repeat:no-repeat;border:0;pointer-events:none;
+}
+.intro.is-shattering .insight-panel {opacity:0 !important;visibility:hidden !important;transition:none !important;}
+.intro.is-shattering .intro-copy,
+.intro.is-shattering .intro-actions,
+.intro.is-shattering .intro-top,
+.intro.is-shattering .intro-footer,
+.intro.is-shattering .intro-analysis-strip {opacity:0;transition:opacity 270ms ease !important;}
+@media (max-width:760px) {
+  .v14-interactive-portrait {will-change:auto;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .v14-interactive-portrait, .v14-interactive-portrait img {transform:none !important;transition:none !important;}
+  .v14-handoff-overlay {display:none !important;}
+}
